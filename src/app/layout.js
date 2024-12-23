@@ -1,5 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ConditionHeaderFooter from "@/Redux/ConditionHeaderFooter";
+
+// import { usePathname } from "next/navigation";
+// import Header from "@/components/Header/Header";
+
+import ReduxProvider from "@/Redux/ReduxProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +28,35 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ReduxProvider>
+          <ConditionHeaderFooter>
+            {/* Conditionally render layout content */}
+            {/* {!isExcludedRoute && <header />} */}
+
+            {/* <Header /> */}
+            {children}
+
+            {/* {!isExcludedRoute && (
+              <footer className="mt-2 footer footer-center bg-base-300 text-base-content p-4">
+                <aside>
+                  <p>
+                    Copyright © {new Date().getFullYear()} - All right reserved
+                    by ACME Industries Ltd
+                  </p>
+                </aside>
+              </footer>
+            )} */}
+
+            {/* <footer className="mt-2 footer footer-center bg-base-300 text-base-content p-4">
+            <aside>
+              <p>
+                Copyright © {new Date().getFullYear()} - All right reserved by
+                ACME Industries Ltd
+              </p>
+            </aside>
+          </footer> */}
+          </ConditionHeaderFooter>
+        </ReduxProvider>
       </body>
     </html>
   );
