@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const dbConnect = async () => {
   try {
-    const dbVar = await mongoose.connect("mongodb://127.0.0.1:27017/nextjsdb");
+    // const dbVar = await mongoose.connect("mongodb://127.0.0.1:27017/nextjsdb");
+    // dbAtlas;
+
+    const dbVar = await mongoose.connect(process.env.dbAtlas);
 
     if (dbVar) {
       console.log("Database connected successfully hola !");
