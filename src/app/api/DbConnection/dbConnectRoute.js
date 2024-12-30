@@ -4,7 +4,7 @@ const dbConnect = async () => {
   try {
     // const dbVar = await mongoose.connect("mongodb://127.0.0.1:27017/nextjsdb");
     // dbAtlas;
-
+    console.log("Database URI:", process.env.dbAtlas);
     const dbVar = await mongoose.connect(process.env.dbAtlas);
 
     if (dbVar) {
