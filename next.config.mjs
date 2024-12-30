@@ -19,7 +19,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/api/:path*", // Matches all API routes
+        source: "/api/(.*)", // Matches all API routes
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           { key: "Access-Control-Allow-Origin", value: "*" }, // Replace "*" with your domain in production
