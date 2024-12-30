@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
 import { MdDelete } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const CartRoutePage = () => {
   const router = useRouter();
@@ -21,6 +22,47 @@ const CartRoutePage = () => {
   useEffect(() => {
     cartData.length > 0 ? setAllCartData(cartData) : setAllCartData([]);
   }, [cartData, totalPrice, totalQuantity]);
+
+  const descCartBtn = async (mapProp) => {
+    try {
+      const descAxRes = await axios.put(
+        `http://localhost:3000/api/product/amountDecBtn?id=${mapProp.id}`
+      );
+
+      console.log(descAxRes?.data?.message || descAxRes);
+
+      dispatch(decCartAmount(mapProp));
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+    }
+  };
+
+  const incCartBtn = async (mapProp) => {
+    try {
+      const incAxRes = await axios.put(
+        `http://localhost:3000/api/product/amountIncBtn?id=${mapProp.id}`
+      );
+
+      console.log(incAxRes?.data?.message || incAxRes);
+
+      dispatch(incCartAmount(mapProp));
+    } catch (error) {
+      console.log(error?.message || error?.response?.data?.message);
+    }
+  };
+
+  const deleteCartFun = async (mapProp) => {
+    try {
+      const deleteAxRes = await axios.delete(
+        `http://localhost:3000/api/product/cardDeleteBtn?id=${mapProp.id}`
+      );
+      console.log(deleteAxRes?.data?.message || deleteAxRes);
+
+      dispatch(deleteCartItem(mapProp));
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+    }
+  };
 
   const cardCreation = () => {
     return (
@@ -67,7 +109,7 @@ const CartRoutePage = () => {
                     type="button"
                     className="bg-blue-500 px-2 text-white rounded-full"
                     onClick={() => {
-                      dispatch(decCartAmount(mapProp));
+                      descCartBtn(mapProp);
                     }}
                   >
                     -
@@ -77,7 +119,7 @@ const CartRoutePage = () => {
                     type="button"
                     className="bg-blue-500 px-2 text-white rounded-full"
                     onClick={() => {
-                      dispatch(incCartAmount(mapProp));
+                      incCartBtn(mapProp);
                     }}
                   >
                     +
@@ -90,7 +132,7 @@ const CartRoutePage = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      dispatch(deleteCartItem(mapProp));
+                      deleteCartFun(mapProp);
                     }}
                   >
                     <MdDelete size={30} />

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import CompanyLogo from "./CompanyLogo";
 import SearchBarComp from "./SearchBar";
 import WishCart from "./WishCart";
@@ -32,12 +33,11 @@ const Header = () => {
           >
             <div className="w-[100px] h-[100px]">
               <Image
-                src={searchProp.thumbnail}
-                alt={searchProp.title}
+                src={searchProp?.thumbnail}
+                alt={searchProp.title || "Default Title"}
                 width={100}
                 height={100}
                 loading="lazy"
-                layout="responsive"
               />
             </div>
 
@@ -77,4 +77,6 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default dynamic(() => Promise.resolve(Header), {
+  ssr: false,
+});

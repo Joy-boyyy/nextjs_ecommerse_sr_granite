@@ -3,10 +3,13 @@
 import axios from "axios";
 import Script from "next/script";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setOrderDetailsData } from "@/Redux/slices/orderDetailsSlice";
 
 const BuyComponent = () => {
-  const { totalPrice, totalQuantity } = useSelector(
+  const dispatch = useDispatch();
+
+  const { totalPrice, totalQuantity, cartData } = useSelector(
     (state) => state.cartSliceVar
   );
 
@@ -60,6 +63,46 @@ const BuyComponent = () => {
             console.log(data);
             if (data.data.isOk) {
               alert("Payment successful");
+
+              const userDetail = {
+                fullname: fullnameState,
+                phoneNumber: phoneNumberState,
+                email: emailState,
+                pinCode: pinState,
+                city: cityState,
+                state: stateState,
+                landMark: landMarkState,
+                alternatePhoneNumber: alterPhoneState,
+              };
+
+              try {
+                const formDataSentVar = await axios.post(
+                  "http://localhost:3000/api/userAllPastOrders",
+                  {
+                    pastOrder: cartData,
+                    userDetail,
+                  },
+                  {
+                    withCredentials: true,
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+
+                console.log("form Data Sent successfully==>", formDataSentVar);
+
+                dispatch(
+                  setOrderDetailsData({
+                    pastOrder: cartData,
+                    userDetail,
+                  })
+                );
+              } catch (error) {
+                console.log(
+                  error?.response?.data?.message || error?.message || error
+                );
+              }
             } else {
               alert("Payment failed");
             }

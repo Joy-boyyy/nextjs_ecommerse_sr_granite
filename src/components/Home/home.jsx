@@ -183,11 +183,10 @@ const DummyComponent = ({ dataGOt }) => {
         >
           <Image
             src={mapProp.thumbnail}
-            alt={mapProp.title}
+            alt={mapProp.title || "no image"}
             width={200}
             height={200}
             loading="lazy"
-            layout="responsive"
           />
           <p>{mapProp.title}</p>
           <p>${mapProp.price}</p>

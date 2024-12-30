@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import axios from "axios";
 import { useEffect } from "react";
 import { CiSearch } from "react-icons/ci";
@@ -44,13 +45,13 @@ const SearchBarComp = () => {
             className="grow pl-3 border border-none outline-none rounded-[20px]"
             placeholder="Search"
           />
-          <div className="bg-orange-400 p-1 text-white rounded-tr-2xl rounded-br-2xl cursor-pointer">
+          <p className="bg-orange-400 p-1 text-white rounded-tr-2xl rounded-br-2xl cursor-pointer">
             <CiSearch size={30} />
-          </div>
+          </p>
         </label>
       </div>
     </div>
   );
 };
 
-export default SearchBarComp;
+export default dynamic(() => Promise.resolve(SearchBarComp), { ssr: false });

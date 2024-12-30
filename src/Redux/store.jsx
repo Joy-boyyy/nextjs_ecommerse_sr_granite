@@ -3,6 +3,7 @@ import selectedCatSliceVar from "./slices/selectedCategorySlice";
 import wishlistSLice from "./slices/wishlistSlice";
 import cartSliceVar from "./slices/cartSlice";
 import searchSliceVar from "./slices/searchResult";
+import orderDetailsContainerSlice from "./slices/orderDetailsSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     wishlistSLice,
     cartSliceVar,
     searchSliceVar,
+    orderDetailsContainerSlice,
   },
 });
 

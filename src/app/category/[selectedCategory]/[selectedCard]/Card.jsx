@@ -11,9 +11,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { addProductToCart } from "@/Redux/slices/cartSlice";
 import dynamic from "next/dynamic";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const Card = ({ cardDataDetails }) => {
   const dispatch = useDispatch();
+
+  const route = useRouter();
+
   const { allWish } = useSelector((state) => state.wishlistSLice);
 
   const [checkWish, setWishFUn] = useState(false);
@@ -35,10 +41,59 @@ const Card = ({ cardDataDetails }) => {
 
   const mapProp = cardDataDetails;
 
-  const putWishFun = (oldMapProp) => {
-    setWishFUn((oldDa) => !oldDa);
-    dispatch(addWish(oldMapProp));
+  const putWishFun = async (oldMapProp) => {
+    const gotCookie = Cookies.get("jwt");
+
+    if (gotCookie === undefined) {
+      return route.push("/user/login");
+    }
+
+    try {
+      const wishAxiosRes = await axios.post(
+        "/api/product/wishlist",
+        oldMapProp,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("wishAxiosResponse", wishAxiosRes);
+
+      setWishFUn((oldDa) => !oldDa);
+      dispatch(addWish(oldMapProp));
+    } catch (error) {
+      console.log(error.response.data.message || error.message);
+    }
   };
+
+  async function addCartFun(mapProp) {
+    const gotCookie = Cookies.get("jwt");
+
+    if (gotCookie === undefined) {
+      return route.push("/user/login");
+    }
+
+    try {
+      const cartAddAxiosRes = await axios.post(
+        "/api/product/cart",
+        mapProp,
+        // The backend is expecting the JSON data directly, not wrapped in a body property. You should send mapProp directly as the request body.
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json", // Explicitly set if needed
+          },
+        }
+      );
+      console.log("cartAddAxiosRes", cartAddAxiosRes);
+      dispatch(addProductToCart(mapProp));
+    } catch (err) {
+      console.log(err.response.data.message || err.message);
+    }
+  }
 
   return (
     <div className="w-[100%]">
@@ -127,7 +182,7 @@ const Card = ({ cardDataDetails }) => {
 
               <button
                 onClick={() => {
-                  dispatch(addProductToCart(mapProp));
+                  addCartFun(mapProp);
                 }}
                 className="hover:bg-blue-600 bg-blue-500 flex gap-2 items-center px-3 text-white rounded-lg"
               >

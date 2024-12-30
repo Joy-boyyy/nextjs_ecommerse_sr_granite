@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useState } from "react";
 
 const CreateAccount = () => {
   const {
@@ -11,6 +12,8 @@ const CreateAccount = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const router = useRouter();
+  const [registerErrorState, setRegisterErr] = useState("");
+  const [userCreatedSuccess, setUserCreated] = useState("");
 
   const onSubmitFun = async (formData) => {
     console.log("formData", formData);
@@ -26,13 +29,11 @@ const CreateAccount = () => {
         structuredObj
       );
 
-      if (axiosRes.status === 200) {
-        console.log(axiosRes.data.message);
-      } else {
-        console.log("Error in axios");
-      }
+      console.log(axiosRes?.data?.message);
+      setUserCreated(axiosRes?.data?.message);
     } catch (err) {
       console.log(err.message || err);
+      setRegisterErr(err?.response?.data?.message || err.message || err);
     }
   };
 
@@ -134,6 +135,17 @@ const CreateAccount = () => {
                 />
                 {errors.userPassword && <p> {errors.userPassword.message}</p>}
 
+                {/* ------------ form error message */}
+                <div className="text-red-600 text-center">
+                  <p>{registerErrorState}</p>
+                </div>
+
+                {/* form success  */}
+                <div className="text-green-600 text-center">
+                  <p>{userCreatedSuccess}</p>
+                </div>
+
+                {/* term and condition */}
                 <div className="flex items-center gap-1.5  justify-start pl-2">
                   <div className="form-control">
                     <label className="label cursor-pointer">

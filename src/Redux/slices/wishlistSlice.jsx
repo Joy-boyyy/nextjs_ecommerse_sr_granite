@@ -21,8 +21,16 @@ const wishlistSLice = createSlice({
       }
       state.wishlistIds = state.allWish.map((item) => item.id);
     },
+
+    // ----- add wish from cloud
+
+    addWishFromCloud(state, action) {
+      const payloadObj = action.payload;
+      state.allWish = payloadObj;
+      state.wishlistIds = payloadObj.map((item) => item.id);
+    },
   },
 });
 
-export const { addWish } = wishlistSLice.actions;
+export const { addWish, addWishFromCloud } = wishlistSLice.actions;
 export default wishlistSLice.reducer;

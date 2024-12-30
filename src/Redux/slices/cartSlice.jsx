@@ -121,6 +121,22 @@ const cartSliceVar = createSlice({
         0
       );
     },
+
+    // product from cloud
+    addProductCloud(state, action) {
+      state.cartData = action.payload;
+      // Recalculate total price for the entire cart
+      state.totalPrice = state.cartData.reduce(
+        (total, item) => total + item.price * item.amount,
+        0
+      );
+      // Recalculate total quantity for the entire cart
+
+      state.totalQuantity = state.cartData.reduce(
+        (total, item) => total + item.amount,
+        0
+      );
+    },
   },
 });
 
@@ -129,5 +145,6 @@ export const {
   deleteCartItem,
   decCartAmount,
   incCartAmount,
+  addProductCloud,
 } = cartSliceVar.actions;
 export default cartSliceVar.reducer;

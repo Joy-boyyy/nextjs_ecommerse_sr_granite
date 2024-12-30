@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import Cookies from "js-cookie";
+import { useState } from "react";
 
 const LoginAccount = () => {
   const {
@@ -14,6 +15,8 @@ const LoginAccount = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const router = useRouter();
+
+  const [userLoginState, setUserLogin] = useState("");
 
   const doLoginFun = async (loginProp) => {
     const loginVar = {
@@ -27,18 +30,15 @@ const LoginAccount = () => {
         loginVar
       );
 
-      if (loginAxiosRes.status === 200) {
-        console.log(loginAxiosRes.data.message);
-        console.log(loginAxiosRes.data);
+      console.log(loginAxiosRes.data.message);
+      console.log(loginAxiosRes.data);
 
-        Cookies.set("jwt", loginAxiosRes.data.jwtVar, { expires: 1 });
+      Cookies.set("jwt", loginAxiosRes.data.jwtVar, { expires: 1 });
 
-        router.push("/");
-      } else {
-        console.log("Error in axios");
-      }
+      router.push("/");
     } catch (err) {
-      console.log(err.message || err);
+      console.log(err.response.data.message || err.message || err);
+      setUserLogin(err.response.data.message || err.message || err);
     }
   };
 
@@ -71,7 +71,9 @@ const LoginAccount = () => {
                   placeholder="Enter Your Email"
                   className="input input-bordered input-primary w-full text-black placeholder:text-black/70"
                 />
-                {errors.usernameInput && <p> {errors.usernameInput.message}</p>}
+                {errors.usernameInput && (
+                  <p className="text-red-600">{errors.usernameInput.message}</p>
+                )}
 
                 <input
                   {...register("userPasswordInput", {
@@ -83,14 +85,21 @@ const LoginAccount = () => {
                         "Password must be at least 8 characters long, and include uppercase, lowercase, number, and special character.",
                     },
                   })}
-                  type="Password"
+                  type="password"
                   placeholder="Enter Your Password"
                   className="input input-bordered input-primary w-full text-black placeholder:text-black/70"
                 />
                 {errors.userPasswordInput && (
-                  <p> {errors.userPasswordInput.message}</p>
+                  <p className="text-red-600">
+                    {errors.userPasswordInput.message}
+                  </p>
                 )}
+                {/* ---- user login error message */}
 
+                <div className="text-red-600 text-center">
+                  <p>{userLoginState}</p>
+                </div>
+                {/* -----------button */}
                 <div className="flex flex-col md:flex-row gap-2 md:gap-4 justify-center items-center">
                   <button
                     className="btn btn-active btn-primary btn-block max-w-[200px]"

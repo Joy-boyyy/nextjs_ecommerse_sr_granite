@@ -6,13 +6,6 @@ import bcrypt from "bcrypt";
 
 import { NextResponse } from "next/server";
 
-export function GET() {
-  return NextResponse.json(
-    { message: "Login check", success: true },
-    { status: 200 }
-  );
-}
-
 export async function POST(req) {
   await dbConnect();
 
@@ -31,7 +24,7 @@ export async function POST(req) {
     if (!findindExistingUserVar) {
       return NextResponse.json(
         { message: "User did not find", success: false },
-        { status: 400 }
+        { status: 401 }
       );
     }
 

@@ -1,7 +1,9 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header/Header";
+import { useEffect, useState } from "react";
 
 const ConditionHeaderFooter = ({ children }) => {
   const pathname = usePathname();
@@ -11,6 +13,12 @@ const ConditionHeaderFooter = ({ children }) => {
 
   // Check if the current route matches the excluded routes
   const isExcludedRoute = excludedRoutes.includes(pathname);
+
+  const [currentYear, setCurrentYear] = useState("");
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   return (
     <>
       {!isExcludedRoute && <Header />}
@@ -20,8 +28,8 @@ const ConditionHeaderFooter = ({ children }) => {
         <footer className="mt-2 footer footer-center bg-base-300 text-base-content p-4">
           <aside>
             <p>
-              Copyright © {new Date().getFullYear()} - All right reserved by
-              ACME Industries Ltd
+              Copyright © {currentYear || "----"} - All rights reserved by ACME
+              Industries Ltd
             </p>
           </aside>
         </footer>
@@ -30,4 +38,6 @@ const ConditionHeaderFooter = ({ children }) => {
   );
 };
 
-export default ConditionHeaderFooter;
+export default dynamic(() => Promise.resolve(ConditionHeaderFooter), {
+  ssr: false,
+});
