@@ -40,7 +40,7 @@ const BuyComponent = () => {
 
     try {
       const axiosResponse = await axios.post(
-        "http://localhost:3000/api/productBuy",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/productBuy`,
         {
           totalPrice,
         }
@@ -77,7 +77,7 @@ const BuyComponent = () => {
 
               try {
                 const formDataSentVar = await axios.post(
-                  "http://localhost:3000/api/userAllPastOrders",
+                  `${process.env.NEXT_PUBLIC_API_URL}/api/userAllPastOrders`,
                   {
                     pastOrder: cartData,
                     userDetail,

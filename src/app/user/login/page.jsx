@@ -26,7 +26,7 @@ const LoginAccount = () => {
 
     try {
       const loginAxiosRes = await axios.post(
-        "http://localhost:3000/api/user/signin",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/signin`,
         loginVar
       );
 

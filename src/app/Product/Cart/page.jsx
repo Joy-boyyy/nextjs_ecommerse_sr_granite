@@ -26,7 +26,7 @@ const CartRoutePage = () => {
   const descCartBtn = async (mapProp) => {
     try {
       const descAxRes = await axios.put(
-        `http://localhost:3000/api/product/amountDecBtn?id=${mapProp.id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/product/amountDecBtn?id=${mapProp.id}`
       );
 
       console.log(descAxRes?.data?.message || descAxRes);
@@ -40,7 +40,7 @@ const CartRoutePage = () => {
   const incCartBtn = async (mapProp) => {
     try {
       const incAxRes = await axios.put(
-        `http://localhost:3000/api/product/amountIncBtn?id=${mapProp.id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/product/amountIncBtn?id=${mapProp.id}`
       );
 
       console.log(incAxRes?.data?.message || incAxRes);
@@ -54,7 +54,7 @@ const CartRoutePage = () => {
   const deleteCartFun = async (mapProp) => {
     try {
       const deleteAxRes = await axios.delete(
-        `http://localhost:3000/api/product/cardDeleteBtn?id=${mapProp.id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/product/cardDeleteBtn?id=${mapProp.id}`
       );
       console.log(deleteAxRes?.data?.message || deleteAxRes);
 

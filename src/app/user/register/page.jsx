@@ -25,12 +25,13 @@ const CreateAccount = () => {
     };
     try {
       const axiosRes = await axios.post(
-        "http://localhost:3000/api/user/signup",
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/signup`,
         structuredObj
       );
 
       console.log(axiosRes?.data?.message);
       setUserCreated(axiosRes?.data?.message);
+      router.push("/user/login");
     } catch (err) {
       console.log(err.message || err);
       setRegisterErr(err?.response?.data?.message || err.message || err);

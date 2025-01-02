@@ -15,7 +15,7 @@ export default function Home() {
     async function fetchingDataFromServer() {
       try {
         const cartFetching = await axios.get(
-          "http://localhost:3000/api/product/cart",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/product/cart`,
           {
             withCredentials: true,
           }
@@ -26,7 +26,7 @@ export default function Home() {
 
         //  ------------- wishlist data fetching
         const wishFetching = await axios.get(
-          "http://localhost:3000/api/product/wishlist",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/product/wishlist`,
           {
             withCredentials: true,
           }
@@ -37,7 +37,7 @@ export default function Home() {
 
         // ------------- order history fetching
         const orderHistory = await axios.get(
-          "http://localhost:3000/api/userAllPastOrders",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/userAllPastOrders`,
           { withCredentials: true }
         );
         console.log("fetched orderHistory===>", orderHistory);
