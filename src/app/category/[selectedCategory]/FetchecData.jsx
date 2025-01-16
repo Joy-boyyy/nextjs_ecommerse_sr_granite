@@ -8,8 +8,12 @@ import { addWish } from "@/Redux/slices/wishlistSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FaHeart } from "react-icons/fa";
 import dynamic from "next/dynamic";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const FetchecData = ({ catData, selectedCategory }) => {
+  // const { allWish } = useSelector((state) => state.wishlistSLice);
+
   const dispatch = useDispatch();
   const { wishlistIds } = useSelector((state) => state.wishlistSLice);
 
@@ -21,6 +25,29 @@ const FetchecData = ({ catData, selectedCategory }) => {
     const discountedPrice = originalPrice - discountAmount;
     return discountedPrice.toFixed(2);
   }
+
+  const addWishFun = async (mapProp) => {
+    console.log("selecterd wish== mapProp", mapProp);
+
+    const gotCookie = Cookies.get("jwt");
+    if (gotCookie === undefined) {
+      return router.push("/user/login");
+    }
+
+    try {
+      const wishAxiosRes = await axios.post("/api/product/wishlist", mapProp, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("wishAxiosResponse", wishAxiosRes);
+      dispatch(addWish(mapProp));
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
+    }
+  };
 
   return (
     <div className="w-[100%]">
@@ -80,9 +107,12 @@ const FetchecData = ({ catData, selectedCategory }) => {
                 className=""
                 type="button"
                 onClick={() => {
-                  dispatch(addWish(mapProp));
+                  // dispatch(addWish(mapProp));
+
+                  addWishFun(mapProp);
                 }}
               >
+                {/* checkWish */}
                 {wishlistIds.includes(mapProp.id) ? (
                   <FaHeart size={30} color="red" />
                 ) : (

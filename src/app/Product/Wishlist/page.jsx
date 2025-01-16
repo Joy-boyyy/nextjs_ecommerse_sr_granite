@@ -5,6 +5,8 @@ import Image from "next/image";
 
 import { FaHeart } from "react-icons/fa";
 import { addWish } from "@/Redux/slices/wishlistSlice";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const WishListRouteFun = () => {
   const dispatch = useDispatch();
@@ -15,6 +17,27 @@ const WishListRouteFun = () => {
   useEffect(() => {
     setWishArr(allWish);
   }, [allWish]);
+
+  const putWishFun = async (oldMapProp) => {
+    const gotCookie = Cookies.get("jwt");
+
+    if (gotCookie === undefined) {
+      return route.push("/user/login");
+    }
+
+    try {
+      await axios.post("/api/product/wishlist", oldMapProp, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      dispatch(addWish(oldMapProp));
+    } catch (error) {
+      console.log(error?.response?.data?.message || error.message);
+    }
+  };
 
   return (
     <div className="w-[100%]">
@@ -51,7 +74,8 @@ const WishListRouteFun = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    dispatch(addWish(wishMap));
+                    // dispatch(addWish(wishMap));
+                    putWishFun(wishMap);
                   }}
                 >
                   <FaHeart size={40} color="red" />

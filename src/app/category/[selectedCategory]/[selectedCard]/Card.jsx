@@ -20,18 +20,21 @@ const Card = ({ cardDataDetails }) => {
 
   const route = useRouter();
 
-  const { allWish } = useSelector((state) => state.wishlistSLice);
+  const {
+    wishlistIds,
+    // allWish
+  } = useSelector((state) => state.wishlistSLice);
 
   const [checkWish, setWishFUn] = useState(false);
 
-  useEffect(() => {
-    // Check if the item exists in the wishlist
-    const checkAndFOundINdex = allWish.findIndex(
-      (findingIndex) => findingIndex.id === cardDataDetails.id
-    );
+  // useEffect(() => {
+  //   // Check if the item exists in the wishlist
+  //   const checkAndFOundINdex = allWish.findIndex(
+  //     (findingIndex) => findingIndex.id === cardDataDetails.id
+  //   );
 
-    setWishFUn(checkAndFOundINdex > -1);
-  }, [allWish, cardDataDetails]);
+  //   setWishFUn(checkAndFOundINdex > -1);
+  // }, [allWish, cardDataDetails]);
 
   function calculateDiscountedPrice(originalPrice, discountPercentage) {
     const discountAmount = (discountPercentage / 100) * originalPrice;
@@ -172,10 +175,15 @@ const Card = ({ cardDataDetails }) => {
                 type="button"
                 className="border rounded-xl px-2 flex gap-2 items-center hover:border-blue-500"
               >
-                {checkWish ? (
+                {/* {checkWish ? (
                   <FaHeart size={40} color="red" />
                 ) : (
                   <CiHeart size={40} />
+                )} */}
+                {wishlistIds.includes(mapProp.id) ? (
+                  <FaHeart size={30} color="red" />
+                ) : (
+                  <CiHeart size={30} />
                 )}
                 Add to Wishlist
               </button>

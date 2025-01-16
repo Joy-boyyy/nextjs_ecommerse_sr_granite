@@ -19,7 +19,9 @@ const wishlistSLice = createSlice({
       } else {
         state.allWish.push(payloadObj);
       }
-      state.wishlistIds = state.allWish.map((item) => item.id);
+      // state.wishlistIds = state.allWish.map((item) => parseInt(item.id));
+      // Update the wishlistIds to reflect the changes
+      state.wishlistIds = state.allWish.map((item) => parseInt(item.id));
     },
 
     // ----- add wish from cloud
@@ -27,7 +29,7 @@ const wishlistSLice = createSlice({
     addWishFromCloud(state, action) {
       const payloadObj = action.payload;
       state.allWish = payloadObj;
-      state.wishlistIds = payloadObj.map((item) => item.id);
+      state.wishlistIds = payloadObj.map((item) => parseInt(item.id));
     },
   },
 });

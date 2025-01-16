@@ -25,24 +25,6 @@ export async function GET(req) {
         { message: "No wishlist added yet by user", wish: [] },
         { status: 200 }
       );
-
-      // if (!selectedUserFoundOrNot) {
-      //   const newWishData = await wishModel.create({
-      //     wishData: [],
-      //     refTo: userId,
-      //   });
-
-      //   if (newWishData) {
-      //     return NextResponse.json(
-      //       { message: "Wish Added to list", success: true },
-      //       { status: 200 }
-      //     );
-      //   } else {
-      //     return NextResponse.json(
-      //       { message: "Wish Not Added to list", success: false },
-      //       { status: 500 }
-      //     );
-      //   }
     } else {
       return NextResponse.json(
         {
@@ -62,8 +44,112 @@ export async function GET(req) {
 }
 
 // ------ wishlist post request to server
+// export async function POST(req) {
+//   await dbConnect();
+//   const {
+//     amount,
+//     id,
+//     title,
+//     description,
+//     category,
+//     price,
+//     discountPercentage,
+//     rating,
+//     warrantyInformation,
+//     shippingInformation,
+//     thumbnail,
+//   } = await req.json();
+
+//   const userId = req.headers.get("USER_ID");
+
+//   if (!userId) {
+//     console.log("User not authenticated ==>", userId);
+//     return NextResponse.json(
+//       { message: "Unauthorized access. Please log in.", success: false },
+//       { status: 401 }
+//     );
+//   }
+
+//   try {
+//     const selectedUserFoundOrNot = await wishModel.findOne({ refTo: userId });
+
+//     if (!selectedUserFoundOrNot) {
+//       const newWishData = await wishModel.create({
+//         wishData: [
+//           {
+//             amount,
+//             id,
+//             title,
+//             description,
+//             category,
+//             price,
+//             discountPercentage,
+//             rating,
+//             warrantyInformation,
+//             shippingInformation,
+//             thumbnail,
+//           },
+//         ],
+//         refTo: userId,
+//       });
+
+//       if (newWishData) {
+//         return NextResponse.json(
+//           { message: "Wish Added to list", success: true },
+//           { status: 200 }
+//         );
+//       } else {
+//         return NextResponse.json(
+//           { message: "Wish Not Added to list", success: false },
+//           { status: 500 }
+//         );
+//       }
+//     } else {
+//       const gotCardWish = selectedUserFoundOrNot.wishData.findIndex(
+//         (findingPreCard) => findingPreCard.id === id
+//       );
+
+//       if (gotCardWish === -1) {
+//         selectedUserFoundOrNot.wishData.push({
+//           amount,
+//           id,
+//           title,
+//           description,
+//           category,
+//           price,
+//           discountPercentage,
+//           rating,
+//           warrantyInformation,
+//           shippingInformation,
+//           thumbnail,
+//         });
+//         await selectedUserFoundOrNot.save();
+
+//         return NextResponse.json(
+//           { message: "Wish Added to List", success: true },
+//           { status: 200 }
+//         );
+//       } else {
+//         selectedUserFoundOrNot.wishData.splice(gotCardWish, 1);
+//         await selectedUserFoundOrNot.save();
+//         return NextResponse.json(
+//           { message: "Wish removed from cart", success: true },
+//           { status: 200 }
+//         );
+//       }
+//     }
+//   } catch (err) {
+//     console.log(err.message || err);
+//     return NextResponse.json(
+//       { message: "Internal Server Error", success: false },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 export async function POST(req) {
   await dbConnect();
+
   const {
     amount,
     id,
@@ -81,7 +167,6 @@ export async function POST(req) {
   const userId = req.headers.get("USER_ID");
 
   if (!userId) {
-    console.log("User not authenticated ==>", userId);
     return NextResponse.json(
       { message: "Unauthorized access. Please log in.", success: false },
       { status: 401 }
@@ -89,12 +174,11 @@ export async function POST(req) {
   }
 
   try {
-    const selectedUserFoundOrNot = await wishModel.findOne({ refTo: userId });
-
-    if (!selectedUserFoundOrNot) {
-      const newWishData = await wishModel.create({
-        wishData: [
-          {
+    const wishlistUpdate = await wishModel.findOneAndUpdate(
+      { refTo: userId },
+      {
+        $addToSet: {
+          wishData: {
             amount,
             id,
             title,
@@ -107,57 +191,30 @@ export async function POST(req) {
             shippingInformation,
             thumbnail,
           },
-        ],
-        refTo: userId,
-      });
+        },
+      },
+      { new: true, upsert: true } // `upsert` creates a new document if none exists
+    );
 
-      if (newWishData) {
-        return NextResponse.json(
-          { message: "Wish Added to list", success: true },
-          { status: 200 }
-        );
-      } else {
-        return NextResponse.json(
-          { message: "Wish Not Added to list", success: false },
-          { status: 500 }
-        );
-      }
-    } else {
-      const gotCardWish = selectedUserFoundOrNot.wishData.findIndex(
-        (findingPreCard) => findingPreCard.id === id
+    if (wishlistUpdate.wishData.some((item) => item.id === id)) {
+      // If already added, remove it
+      await wishModel.updateOne(
+        { refTo: userId },
+        { $pull: { wishData: { id } } }
       );
 
-      if (gotCardWish === -1) {
-        selectedUserFoundOrNot.wishData.push({
-          amount,
-          id,
-          title,
-          description,
-          category,
-          price,
-          discountPercentage,
-          rating,
-          warrantyInformation,
-          shippingInformation,
-          thumbnail,
-        });
-        await selectedUserFoundOrNot.save();
-
-        return NextResponse.json(
-          { message: "Wish Added to List", success: true },
-          { status: 200 }
-        );
-      } else {
-        selectedUserFoundOrNot.wishData.splice(gotCardWish, 1);
-        await selectedUserFoundOrNot.save();
-        return NextResponse.json(
-          { message: "Wish removed from cart", success: true },
-          { status: 200 }
-        );
-      }
+      return NextResponse.json(
+        { message: "Wish removed from list", success: true },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        { message: "Wish added to list", success: true },
+        { status: 200 }
+      );
     }
   } catch (err) {
-    console.log(err.message || err);
+    console.error("Error adding/removing wishlist item:", err);
     return NextResponse.json(
       { message: "Internal Server Error", success: false },
       { status: 500 }

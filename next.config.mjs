@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "fakestoreapi.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
+      },
     ],
   },
   async headers() {

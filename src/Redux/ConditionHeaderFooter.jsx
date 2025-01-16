@@ -25,7 +25,7 @@ const ConditionHeaderFooter = ({ children }) => {
 
       {children}
       {!isExcludedRoute && (
-        <footer className="mt-2 footer footer-center bg-base-300 text-base-content p-4">
+        <footer className=" footer footer-center bg-black text-base-content p-4">
           <aside>
             <p>
               Copyright © {currentYear || "----"} - All rights reserved by ACME
